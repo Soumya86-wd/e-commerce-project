@@ -1,0 +1,30 @@
+body {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  color: rgb(33, 33, 33);
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+select {
+  cursor: pointer;
+}
+
+input, select, button {
+  font-family: Roboto, Arial, Helvetica, sans-serif; 
+}
+
+/* Used AI tool to find this code */
+.limit-text-to-2-lines {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-clamp: 2;
+}
