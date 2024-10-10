@@ -62,6 +62,10 @@
   flex-direction: column;
 }
 
+.product-clickable-area {
+  cursor: pointer;
+}
+
 .product-image-container {
   display: flex;
   justify-content: center;
