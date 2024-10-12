@@ -1,4 +1,4 @@
-import { formatCurrency } from "../utils/moneyUtilities.js";
+import { formatPaisaToRupees } from "../utils/moneyUtilities.js";
 
 const config = {
   imageBasePath: './assets/images/products/',
@@ -40,7 +40,7 @@ class Product {
   }
 
   getPriceinRupees() {
-    return `INR ${formatCurrency(this.pricePaisa)}`;
+    return `INR ${formatPaisaToRupees(this.pricePaisa)}`;
   }
 
   getImagePath() {

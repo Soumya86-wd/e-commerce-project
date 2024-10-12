@@ -1,4 +1,4 @@
-import { formatCurrency } from "../utils/moneyUtilities.js";
+import { formatPaisaToRupees } from "../utils/moneyUtilities.js";
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 
 const jsonDataFilePath = './temp-backend/deliveryOptions.json';
@@ -22,7 +22,7 @@ class DeliveryOption {
   getPriceString() {
     const priceString = (this.pricePaisa === 0)
                           ? 'FREE'
-                          : `INR ${formatCurrency(this.pricePaisa)} -`;
+                          : `INR ${formatPaisaToRupees(this.pricePaisa)} -`;
     return priceString;
   }
 
