@@ -27,6 +27,9 @@ export function saveCart(newCart) {
 }
 
 export function retrieveCartItems() {
+  if(!cart) {
+    return [];
+  }
   return cart.cartItems;
 }
 

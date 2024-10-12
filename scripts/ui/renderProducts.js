@@ -1,8 +1,14 @@
 import { retrieveAllProducts, loadProducts } from "../data/productsData.js";
+import { renderMainHeaderHtml } from "./renderHeaders.js";
 
 let products = [];
 
 async function renderProductsPage() {
+  try {
+    await renderPageHeader()
+  } catch (error) {
+    console.error('Error loading cart quantity', error);
+  }
   try {
     await loadProducts();
     products = retrieveAllProducts();
@@ -90,6 +96,12 @@ function renderProductHTML(productObj) {
         </button>
       </div>
   `;
+}
+
+async function renderPageHeader() {
+  const mainHeaderHtml = await renderMainHeaderHtml();
+  document.getElementById('js-main-header')
+    .innerHTML = mainHeaderHtml;
 }
 
 function displayErrorMessage(message) {
