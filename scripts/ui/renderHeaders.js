@@ -19,7 +19,6 @@ const config = {
 
 export async function renderMainHeaderHtml() {
   const cartQuantity = await getCartQuantity();
-  console.log(cartQuantity);
   const cartQuantityDisplay = (cartQuantity)
                             ? '' + cartQuantity
                             : '';
@@ -59,6 +58,31 @@ export async function renderMainHeaderHtml() {
   return mainHeaderHtml;
 }
 
-export function renderCheckoutHeaderHtml(){
+export async function renderCheckoutHeaderHtml(){
+  const cartQuantity = await getCartQuantity();
+  const cartQuantityDisplay = (cartQuantity === 1)
+                            ? '1 item'
+                            : cartQuantity + ' items';
+  
+  const checkoutHeaderHtml = `
+    <div class="header-content">
+      <div class="checkout-header-left-section">
+        <a href="${config.htmlPage.productsPage}">
+          <img class="main-logo" src="${config.iconLogoPath.mainLogoDark}">
+          <img class="mobile-logo" src="${config.iconLogoPath.mobileLogoDark}">
+        </a>
+      </div>
 
+      <div class="checkout-header-middle-section">
+        Checkout (<a class="return-to-home-link"
+          href="${config.htmlPage.productsPage}">${cartQuantityDisplay}</a>)
+      </div>
+
+      <div class="checkout-header-right-section">
+        <img src="${config.iconLogoPath.checkoutLockIcon}">
+      </div>
+    </div>
+  `;
+
+  return checkoutHeaderHtml;
 }
