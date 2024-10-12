@@ -1,8 +1,11 @@
-import { products, fetchProducts } from "../data/productsData.js";
+import { retrieveAllProducts, loadProducts } from "../data/productsData.js";
 
-async function loadPage() {
+let products = [];
+
+async function renderProductsPage() {
   try {
-    await fetchProducts();
+    await loadProducts();
+    products = retrieveAllProducts();
     if (products.length > 0) {
       renderProductsGrid();
     } else {
@@ -14,7 +17,7 @@ async function loadPage() {
   }
 }
 
-loadPage();
+renderProductsPage();
 
 function renderProductsGrid() {
   const productsGridElement = document.getElementById('js-products-grid');
@@ -55,7 +58,7 @@ function renderProductHTML(productObj) {
         </div>
 
         <div class="product-price">
-          ${productObj.getPrice()}
+          ${productObj.getPriceinRupees()}
         </div>
 
         <div class="product-quantity-container">

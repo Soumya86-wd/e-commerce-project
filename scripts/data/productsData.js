@@ -39,7 +39,7 @@ class Product {
     return `${config.ratingsBasePath}${ratingFileName}`;
   }
 
-  getPrice() {
+  getPriceinRupees() {
     return `INR ${formatCurrency(this.pricePaisa)}`;
   }
 
@@ -93,9 +93,9 @@ class Appliance extends Product {
 }
 
 const tempProductsPath = config.jsonDataFilePath;
-export let products = []
+let products = []
 
-export async function fetchProducts() {
+export async function loadProducts() {
   try {
     const response = await fetch(tempProductsPath);
     const productsData = await response.json();
@@ -114,4 +114,16 @@ export async function fetchProducts() {
   } catch (error) {
     console.error('Error loading or processing products.json:', error);
   }
+}
+
+export function retrieveAllProducts() {
+  return products;
+}
+
+export function getProductById(productId) {
+  const matchingProduct = products.find(productDetails => 
+    productDetails.id === productId
+  );
+
+  return matchingProduct;
 }

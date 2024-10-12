@@ -2,8 +2,13 @@ import { formatCurrency } from "../utils/moneyUtilities.js";
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 
 const jsonDataFilePath = './temp-backend/deliveryOptions.json';
+let deliveryOptions = [];
 
-class DeliveryOptions {
+export function retrieveDeliveryOptions() {
+  return deliveryOptions;
+}
+
+class DeliveryOption {
   id;
   deliveryDays;
   pricePaisa;
@@ -17,7 +22,7 @@ class DeliveryOptions {
   getPriceString() {
     const priceString = (this.pricePaisa === 0)
                           ? 'FREE'
-                          : `INR ${formatCurrency(this.pricePaisa)}`;
+                          : `INR ${formatCurrency(this.pricePaisa)} -`;
     return priceString;
   }
 
@@ -30,17 +35,22 @@ class DeliveryOptions {
   }
 } 
 
-export let deliveryOptions = [];
-export async function fetchDeliveryOptions() {
+export async function loadDeliveryOptions() {
   try {
     const response = await fetch(jsonDataFilePath);
     const deliveryOptionsData = await response.json();
 
     deliveryOptions = deliveryOptionsData.map((deliveryDetails) => {
-      return new DeliveryOptions(deliveryDetails);
+      return new DeliveryOption(deliveryDetails);
     });
   } catch (error) {
     console.error('Error fetching delivery options', error);
   }
 }
 
+export function getDeliveryOptionById(deliveryOptionId) {
+  const selectedDeliveryOption = deliveryOptions.find(deliveryOption => 
+    deliveryOption.id === deliveryOptionId
+  );
+  return selectedDeliveryOption || deliveryOptions[0];
+}

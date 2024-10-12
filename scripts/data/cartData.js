@@ -1,12 +1,11 @@
-import { deliveryOptions, fetchDeliveryOptions } from "./deliveryOptions.js";
+import { retrieveDeliveryOptions, loadDeliveryOptions } from "./deliveryOptions.js";
 
 let config = {};
-export let cart = new Cart({ userId: null, cartItems: [] });
+let cart = null;
 
 async function initializeDeliveryOptions() {
-  await fetchDeliveryOptions();
-  console.log(deliveryOptions);
-  
+  await loadDeliveryOptions();
+  const deliveryOptions = retrieveDeliveryOptions();
   config = {
     jsonDataFilePath: './temp-backend/cart.json',
     validDeliveryIds: deliveryOptions.map((deliveryDetails) => {
@@ -20,11 +19,16 @@ async function initializeDeliveryOptions() {
 
 export async function intializeCart() {
   await initializeDeliveryOptions();
-  await fetchCart();
-  console.log(cart);
+  await loadCart();
 }
 
-intializeCart();
+export function saveCart(newCart) {
+  cart = newCart;
+}
+
+export function retrieveCartItems() {
+  return cart.cartItems;
+}
 
 class Cart {
   userId;
@@ -36,7 +40,7 @@ class Cart {
   }
 
   addToCart(productId, quantity) {
-    if (quantity <= 0 || !Number.isInteger(quantity)) {
+    if (!cart || quantity <= 0 || !Number.isInteger(quantity)) {
       return false;
     }
     
@@ -58,6 +62,10 @@ class Cart {
   }
 
   removeFromCart(productId) {
+    if(!cart) {
+      return false;
+    }
+    
     const originalCartLength = this.cartItems.length;
     this.cartItems = this.cartItems.filter(cartItem => 
       cartItem.productId !== productId
@@ -67,6 +75,10 @@ class Cart {
   }
 
   updateDeliveryOption(productId, deliveryOptionId) {
+    if(!cart) {
+      return false;
+    }
+
     const matchingItem = this.cartItems.find(cartItem => 
       cartItem.productId === productId
     );
@@ -81,12 +93,12 @@ class Cart {
   }
 }
 
-async function fetchCart() {
+async function loadCart() {
   try {
     const response = await fetch(config.jsonDataFilePath);
     const cartDetails = await response.json();
 
-    cart = new Cart(cartDetails);
+    saveCart(new Cart(cartDetails));
   } catch (error) {
     console.error('Error fetching cart', error);
   }
