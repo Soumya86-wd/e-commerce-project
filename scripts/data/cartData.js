@@ -33,7 +33,14 @@ export function retrieveCartItems() {
   return cart.cartItems;
 }
 
-class Cart {
+export function retrieveCartUser() {
+  if(!cart) {
+    return null;
+  }
+  return cart.userId;
+}
+
+export class Cart {
   userId;
   cartItems;
 
@@ -43,8 +50,8 @@ class Cart {
   }
 
   addToCart(productId, quantity) {
-    if (!cart || quantity <= 0 || !Number.isInteger(quantity)) {
-      return false;
+    if (quantity <= 0 || !Number.isInteger(quantity)) {
+      return this;
     }
     
     const matchingItem = this.cartItems.find(cartItem => 
@@ -61,48 +68,68 @@ class Cart {
       });
     }
 
-    return true;
+    return this;
   }
 
   removeFromCart(productId) {
-    if(!cart) {
-      return false;
-    }
-    
-    const originalCartLength = this.cartItems.length;
     this.cartItems = this.cartItems.filter(cartItem => 
       cartItem.productId !== productId
     );
 
-    return !(originalCartLength === this.cartItems.length);
+    return this;
   }
 
-  updateDeliveryOption(productId, deliveryOptionId) {
-    if(!cart) {
-      return false;
+  updateQuantity(productId, newQuantity) {
+    if (newQuantity <= 0 || !Number.isInteger(newQuantity)) {
+      return this;
     }
 
     const matchingItem = this.cartItems.find(cartItem => 
       cartItem.productId === productId
     );
+
+    if(matchingItem) {
+      matchingItem.quantity = newQuantity;
+    }
+
+    return this;
+  }
+
+  updateDeliveryOption(productId, newDeliveryId) {
+    const matchingItem = this.cartItems.find(cartItem => 
+      cartItem.productId === productId
+    );
     
-    if(matchingItem && config.validDeliveryIds.includes(deliveryOptionId)) {
-      matchingItem.deliveryOptionId = deliveryOptionId;
+    if(matchingItem && config.validDeliveryIds.includes(newDeliveryId)) {
+      matchingItem.deliveryOptionId = newDeliveryId;
     } else {
-      return false;
+      return this;
     }
     
-    return true;
+    return this;
+  }
+
+  resetCartItems() {
+    this.cartItems = [];
+    return this;
   }
 }
 
 async function loadCart() {
   try {
     const response = await fetch(config.jsonDataFilePath);
-    const cartDetails = await response.json();
 
+    if (!response.ok) {
+      const errorMessage = 'Failed to fetch cart data';
+      console.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    const cartDetails = await response.json();
     saveCart(new Cart(cartDetails));
+
   } catch (error) {
-    console.error('Error fetching cart', error);
+    console.error('Error in loadCart', error.message);
+    throw error;
   }
 }

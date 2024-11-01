@@ -38,13 +38,22 @@ class DeliveryOption {
 export async function loadDeliveryOptions() {
   try {
     const response = await fetch(jsonDataFilePath);
+
+    if(!response.ok) {
+      const errorMessage = 'Failed to fetch deliveryOptions';
+      console.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
     const deliveryOptionsData = await response.json();
 
     deliveryOptions = deliveryOptionsData.map((deliveryDetails) => {
       return new DeliveryOption(deliveryDetails);
     });
+
   } catch (error) {
-    console.error('Error fetching delivery options', error);
+    console.error('Error in loadDeliveryOptions', error.message);
+    throw error;
   }
 }
 
